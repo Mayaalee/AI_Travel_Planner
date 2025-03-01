@@ -37,7 +37,7 @@ if "GENAI_API_KEY" not in st.session_state:
 
 # Sidebar for API Keys
 st.sidebar.markdown("### 🔑 API Keys Required")
-st.sidebar.markdown("[📚 How to get a Google AI API Key?](https://aistudio.google.com/)")
+st.sidebar.markdown("[Get your API Key](https://aistudio.google.com/)")
 
 GENAI_API_KEY = st.sidebar.text_input(
     "Enter Google AI API Key", type="password", value=st.session_state["GENAI_API_KEY"]
@@ -50,11 +50,6 @@ if st.sidebar.button("✅ Verify API Key"):
         st.sidebar.success("✅ API key verified and saved!")
     else:
         st.sidebar.error("⚠️ Please enter a valid API key!")
-
-# Button to reset API keys
-if st.sidebar.button("🔄 Reset API Key"):
-    st.session_state["GENAI_API_KEY"] = None
-    st.sidebar.warning("⚠️ API key has been reset. Please re-enter it.")
 
 def main():
     if not st.session_state["GENAI_API_KEY"]:
@@ -85,10 +80,11 @@ def main():
 
         date_range = f"{start_date} to {end_date}"
 
-        # Fetch recommendations (assuming API returns prices in USD)
-        recommendations = fetch_travel_recommendations(
-            source, destination, mode, budget, time, travelers, date_range, st.session_state["GENAI_API_KEY"]
-        )
+        # Display loading indicator
+        with st.spinner(" Finding the best travel options for you..."):
+            recommendations = fetch_travel_recommendations(
+                source, destination, mode, budget, time, travelers, date_range, st.session_state["GENAI_API_KEY"]
+            )
 
         st.markdown("## ✨ **Travel Recommendations**")
         st.markdown(recommendations)
